@@ -38,33 +38,59 @@
       padding: 2rem;
     }
 
-    button {
-      padding: 1rem 2rem;
+.card {
+      width: 200px;
+      height: 300px;
+      border-radius: 16px;
+      background: #d0e6d9;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 1.2rem;
-      background-color: #a97d50;
-      color: white;
-      border: none;
-      border-radius: 12px;
       cursor: pointer;
-      margin-top: 1rem;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      position: relative;
+      perspective: 1000px;
     }
-
-    #result {
+    .card-content {
+      padding: 1rem;
+      transform: rotateY(0deg);
+      backface-visibility: hidden;
+    }
+    .card.flipped .card-content {
+      transform: rotateY(180deg);
+    }
+    .message {
+      max-width: 80%;
+      margin-top: 1rem;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .pose {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      color: #446b5a;
+    }
+    footer {
       margin-top: 2rem;
-      font-size: 1.5rem;
-      color: #444;
+      font-size: 0.9rem;
+      color: #6b8f7d;
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <h1>✨ 오늘의 TAO 카드 ✨</h1>
-    <button onclick="drawCard()">카드 뽑기</button>
-    <div id="result"></div>
+  <h1>🌿 TAO Yoga&Pilates 오늘의 운세 카드</h1>
+  <div class="card" id="fortuneCard">
+    <div class="card-content" id="cardContent">클릭해서 오늘의 카드를 확인하세요</div>
   </div>
+  <div class="message" id="message"></div>
+  <div class="pose" id="pose"></div>
+  <footer>매일 한 번만 운세를 볼 수 있어요 🌞</footer>
 
   <script>
-    const messages = [
+    const affirmations = [
       "오늘은 나에게 집중하는 날입니다.",
       "호흡을 깊이 들이쉬면, 마음도 맑아집니다.",
       "작은 움직임에도 큰 변화가 깃들어요.",
@@ -94,44 +120,78 @@
       "오늘의 당신은 충분히 아름답습니다.",
       "몸을 움직이며 마음도 함께 흐르게 해요.",
       "균형이 필요한 순간, 잠시 멈춰보세요.",
-      "오늘의 나를 향한 미소를 잊지 마세요."
+      "오늘의 나를 향한 미소를 잊지 마세요.",
+      "지친 나에게 휴식을 선물해보세요. (디톡스 테라피 1회 증정)",
+      "지친 나에게 휴식을 선물해보세요. (디톡스 테라피 3회 증정)",
+      "지친 나에게 휴식을 선물해보세요. (디톡스 테라피 5회 증정)",
+      "오늘의 행운은 모두 당신에게! (횟수 5회 추가 쿠폰) ※등록 시 사용 가능, 중복 적용 불가(자세한 사항은 매니저에게 문의)"
     ];
 
-    const poses = [
-      "요가: 다운독 자세",
-      "요가: 나무 자세",
-      "요가: 전사 자세 II",
-      "요가: 아기 자세",
-      "요가: 낙타 자세",
-      "요가: 코브라 자세",
-      "요가: 삼각 자세",
-      "요가: 비둘기 자세",
-      "요가: 매 자세",
-      "요가: 영웅 자세",
-      "필라테스: 백 익스텐션",
-      "필라테스: 롤링 라이크 어 볼",
-      "필라테스: 더블 레그 스트레치",
-      "필라테스: 싱글 레그 서클",
-      "필라테스: 브릿지",
-      "필라테스: 스파인 트위스트",
-      "필라테스: 레그 풀 프론트",
-      "필라테스: 오픈 레그 락커",
-      "필라테스: 스완",
-      "필라테스: 플랭크"
+    const yogaPoses = [
+      "산 자세 (Tadasana)",
+      "전사 자세 II (Virabhadrasana II)",
+      "나무 자세 (Vrksasana)",
+      "고양이-소 자세 (Marjaryasana-Bitilasana)",
+      "다운독 (Adho Mukha Svanasana)",
+      "아이 자세 (Balasana)",
+      "코브라 자세 (Bhujangasana)",
+      "비둘기 자세 (Kapotasana)",
+      "반달 자세 (Ardha Chandrasana)",
+      "활 자세 (Dhanurasana)"
     ];
 
-    function drawCard() {
-      const today = new Date().toDateString();
-      if (localStorage.getItem("drawnDate") === today) {
-        document.getElementById("result").innerHTML = "✨ 오늘의 카드를 이미 뽑았어요! 내일 다시 시도해 주세요.";
-        return;
-      }
+    const pilatesMoves = [
+      "백 롤업 (Roll-Up)",
+      "브릿지 (Shoulder Bridge)",
+      "레그 서클 (Leg Circles)",
+      "더 헌드레드 (The Hundred)",
+      "사이드 킥 (Side Kick)",
+      "플랭크 (Plank)",
+      "싱글 레그 스트레치 (Single Leg Stretch)",
+      "더블 레그 스트레치 (Double Leg Stretch)",
+      "크리스 크로스 (Criss Cross)",
+      "스완 다이브 (Swan Dive)"
+    ];
 
-      const message = messages[Math.floor(Math.random() * messages.length)];
-      const pose = poses[Math.floor(Math.random() * poses.length)];
-      document.getElementById("result").innerHTML = `💌 ${message}<br><br>🧘 ${pose}`;
-      localStorage.setItem("drawnDate", today);
+    const card = document.getElementById('fortuneCard');
+    const cardContent = document.getElementById('cardContent');
+    const message = document.getElementById('message');
+    const pose = document.getElementById('pose');
+
+    const today = new Date().toISOString().split('T')[0];
+    const storedDate = localStorage.getItem('lastDrawDate');
+    const storedMessage = localStorage.getItem('todayMessage');
+    const storedPose = localStorage.getItem('todayPose');
+
+    if (storedDate === today && storedMessage) {
+      cardContent.textContent = '이미 오늘의 카드를 뽑았어요';
+      message.textContent = storedMessage;
+      pose.textContent = storedPose || '';
     }
+
+    card.addEventListener('click', () => {
+      const now = new Date().toISOString().split('T')[0];
+      const lastDate = localStorage.getItem('lastDrawDate');
+
+      if (lastDate === now) return;
+
+      const randomMsg = Math.floor(Math.random() * affirmations.length);
+      const selectedMsg = affirmations[randomMsg];
+
+      const yoga = yogaPoses[Math.floor(Math.random() * yogaPoses.length)];
+      const pilates = pilatesMoves[Math.floor(Math.random() * pilatesMoves.length)];
+
+      const selectedPose = `요가: ${yoga} / 필라테스: ${pilates}`;
+
+      card.classList.toggle('flipped');
+      cardContent.textContent = '🌱';
+      message.textContent = selectedMsg;
+      pose.textContent = selectedPose;
+
+      localStorage.setItem('lastDrawDate', now);
+      localStorage.setItem('todayMessage', selectedMsg);
+      localStorage.setItem('todayPose', selectedPose);
+    });
   </script>
 </body>
 </html>

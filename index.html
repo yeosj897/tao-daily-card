@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAO 오늘의 카드</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #fefcf9;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 배경 로고 */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 80vmin;
+      height: 80vmin;
+      background-image: url('logo-bg.png'); /* 업로드할 로고 파일명과 같게! */
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0.05;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    button {
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      background-color: #a97d50;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    #result {
+      margin-top: 2rem;
+      font-size: 1.5rem;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>✨ 오늘의 TAO 카드 ✨</h1>
+    <button onclick="drawCard()">카드 뽑기</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const messages = [
+      "오늘은 나에게 집중하는 날입니다.",
+      "호흡을 깊이 들이쉬면, 마음도 맑아집니다.",
+      "작은 움직임에도 큰 변화가 깃들어요.",
+      "몸이 원하는 소리에 귀 기울여 주세요.",
+      "당신의 중심은 흔들리지 않아요.",
+      "지금의 당신, 충분히 잘하고 있어요.",
+      "차분한 에너지가 당신을 감쌉니다.",
+      "오늘의 키워드는 '유연함'입니다.",
+      "명상이 당신에게 균형을 선물할 거예요.",
+      "긴장을 내려놓는 순간, 평화가 찾아옵니다.",
+      "당신의 몸은 오늘도 고마워하고 있어요.",
+      "웃음이 오늘의 가장 좋은 약이 될 거예요.",
+      "마음의 긴장을 부드럽게 풀어보세요.",
+      "내면의 평화가 외면에도 드러납니다.",
+      "오늘 하루, 자신에게 친절해지세요.",
+      "긍정의 기운이 가슴 깊이 스며듭니다.",
+      "우주는 지금도 당신을 응원하고 있어요.",
+      "스트레칭처럼 마음도 부드럽게!",
+      "오늘은 나에게 '쉼'을 허락하세요.",
+      "자연과 호흡을 맞춰보세요.",
+      "요가 매트 위의 집중이 일상까지 이어져요.",
+      "오늘은 새로운 시선을 가질 수 있는 날.",
+      "내면의 빛이 오늘 더 밝게 빛나요.",
+      "적당한 흐름이 인생을 아름답게 합니다.",
+      "바람처럼 부드럽고, 뿌리처럼 단단하게.",
+      "지금 있는 그대로의 나를 인정해요.",
+      "오늘의 당신은 충분히 아름답습니다.",
+      "몸을 움직이며 마음도 함께 흐르게 해요.",
+      "균형이 필요한 순간, 잠시 멈춰보세요.",
+      "오늘의 나를 향한 미소를 잊지 마세요."
+    ];
+
+    const poses = [
+      "요가: 다운독 자세",
+      "요가: 나무 자세",
+      "요가: 전사 자세 II",
+      "요가: 아기 자세",
+      "요가: 낙타 자세",
+      "요가: 코브라 자세",
+      "요가: 삼각 자세",
+      "요가: 비둘기 자세",
+      "요가: 매 자세",
+      "요가: 영웅 자세",
+      "필라테스: 백 익스텐션",
+      "필라테스: 롤링 라이크 어 볼",
+      "필라테스: 더블 레그 스트레치",
+      "필라테스: 싱글 레그 서클",
+      "필라테스: 브릿지",
+      "필라테스: 스파인 트위스트",
+      "필라테스: 레그 풀 프론트",
+      "필라테스: 오픈 레그 락커",
+      "필라테스: 스완",
+      "필라테스: 플랭크"
+    ];
+
+    function drawCard() {
+      const today = new Date().toDateString();
+      if (localStorage.getItem("drawnDate") === today) {
+        document.getElementById("result").innerHTML = "✨ 오늘의 카드를 이미 뽑았어요! 내일 다시 시도해 주세요.";
+        return;
+      }
+
+      const message = messages[Math.floor(Math.random() * messages.length)];
+      const pose = poses[Math.floor(Math.random() * poses.length)];
+      document.getElementById("result").innerHTML = `💌 ${message}<br><br>🧘 ${pose}`;
+      localStorage.setItem("drawnDate", today);
+    }
+  </script>
+</body>
+</html>

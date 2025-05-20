@@ -13,7 +13,6 @@
       overflow: hidden;
     }
 
-    /* 배경 로고 */
     body::before {
       content: "";
       position: absolute;
@@ -21,7 +20,7 @@
       left: 50%;
       width: 80vmin;
       height: 80vmin;
-      background-image: url('logo-bg.png'); /* 업로드할 로고 파일명과 같게! */
+      background-image: url('logo-bg.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -35,44 +34,74 @@
       position: relative;
       z-index: 1;
       text-align: center;
-      padding: 2rem;
+      padding: 2rem 1rem;
     }
 
-.card {
-      width: 200px;
-      height: 300px;
+    h1 {
+      font-size: 5vw;
+      color: #446b5a;
+    }
+
+    .card {
+      width: 80vw;
+      max-width: 260px;
+      height: 400px;
       border-radius: 16px;
+      background: transparent;
+      perspective: 1000px;
+      margin: 1.5rem auto;
+    }
+
+    .card-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
       background: #d0e6d9;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: transform 0.6s;
-      transform-style: preserve-3d;
-      position: relative;
-      perspective: 1000px;
-    }
-    .card-content {
       padding: 1rem;
-      transform: rotateY(0deg);
-      backface-visibility: hidden;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     }
-    .card.flipped .card-content {
-      transform: rotateY(180deg);
-    }
-    .message {
-      max-width: 80%;
-      margin-top: 1rem;
-      font-weight: bold;
+
+    .card-front {
       font-size: 1.1rem;
     }
+
+    .card-back {
+      transform: rotateY(180deg);
+      flex-direction: column;
+      font-size: 1rem;
+    }
+
+    .message {
+      max-width: 90%;
+      margin: 1rem auto 0;
+      font-weight: bold;
+      font-size: 1.05rem;
+      color: #2f4f4f;
+    }
+
     .pose {
       margin-top: 0.5rem;
       font-size: 1rem;
       color: #446b5a;
     }
+
     footer {
       margin-top: 2rem;
       font-size: 0.9rem;
@@ -81,13 +110,19 @@
   </style>
 </head>
 <body>
-  <h1>🌿 TAO Yoga&Pilates 오늘의 운세 카드</h1>
-  <div class="card" id="fortuneCard">
-    <div class="card-content" id="cardContent">클릭해서 오늘의 카드를 확인하세요</div>
+  <div class="app">
+    <h1>🌿 TAO 오늘의 운세 카드</h1>
+    <div class="card" id="fortuneCard">
+      <div class="card-inner">
+        <div class="card-front" id="cardFront">클릭해서 오늘의 카드를 확인하세요</div>
+        <div class="card-back">
+          <div class="message" id="message"></div>
+          <div class="pose" id="pose"></div>
+        </div>
+      </div>
+    </div>
+    <footer>매일 한 번만 운세를 볼 수 있어요 🌞</footer>
   </div>
-  <div class="message" id="message"></div>
-  <div class="pose" id="pose"></div>
-  <footer>매일 한 번만 운세를 볼 수 있어요 🌞</footer>
 
   <script>
     const affirmations = [
@@ -124,7 +159,7 @@
       "지친 나에게 휴식을 선물해보세요. (디톡스 테라피 1회 증정)",
       "지친 나에게 휴식을 선물해보세요. (디톡스 테라피 3회 증정)",
       "지친 나에게 휴식을 선물해보세요. (디톡스 테라피 5회 증정)",
-      "오늘의 행운은 모두 당신에게! (횟수 5회 추가 쿠폰) ※등록 시 사용 가능, 중복 적용 불가(자세한 사항은 매니저에게 문의)"
+      "오늘의 행운은 모두 당신에게! (횟수 5회 추가 쿠폰)"
     ];
 
     const yogaPoses = [
@@ -154,7 +189,8 @@
     ];
 
     const card = document.getElementById('fortuneCard');
-    const cardContent = document.getElementById('cardContent');
+    const cardInner = card.querySelector('.card-inner');
+    const cardFront = document.getElementById('cardFront');
     const message = document.getElementById('message');
     const pose = document.getElementById('pose');
 
@@ -164,9 +200,10 @@
     const storedPose = localStorage.getItem('todayPose');
 
     if (storedDate === today && storedMessage) {
-      cardContent.textContent = '이미 오늘의 카드를 뽑았어요';
+      cardFront.textContent = '이미 오늘의 카드를 뽑았어요';
       message.textContent = storedMessage;
       pose.textContent = storedPose || '';
+      card.classList.add('flipped');
     }
 
     card.addEventListener('click', () => {
@@ -175,16 +212,12 @@
 
       if (lastDate === now) return;
 
-      const randomMsg = Math.floor(Math.random() * affirmations.length);
-      const selectedMsg = affirmations[randomMsg];
-
+      const selectedMsg = affirmations[Math.floor(Math.random() * affirmations.length)];
       const yoga = yogaPoses[Math.floor(Math.random() * yogaPoses.length)];
       const pilates = pilatesMoves[Math.floor(Math.random() * pilatesMoves.length)];
-
       const selectedPose = `요가: ${yoga} / 필라테스: ${pilates}`;
 
-      card.classList.toggle('flipped');
-      cardContent.textContent = '🌱';
+      card.classList.add('flipped');
       message.textContent = selectedMsg;
       pose.textContent = selectedPose;
 

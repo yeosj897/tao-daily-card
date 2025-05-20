@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TAO 오늘의 카드</title>
   <style>
     body {
@@ -38,13 +38,13 @@
     }
 
     h1 {
-      font-size: 5vw;
+      font-size: 6vw;
       color: #446b5a;
     }
 
     .card {
       width: 80vw;
-      max-width: 260px;
+      max-width: 300px;
       height: 400px;
       border-radius: 16px;
       background: transparent;
@@ -80,26 +80,40 @@
 
     .card-front {
       font-size: 1.1rem;
+      color: #2f4f4f;
+      font-weight: bold;
+      text-align: center;
     }
 
     .card-back {
       transform: rotateY(180deg);
       flex-direction: column;
-      font-size: 1rem;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    .card-back::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.4);
+      border-radius: 16px;
+      z-index: 0;
+    }
+
+    .message, .pose {
+      position: relative;
+      z-index: 1;
+      padding: 0 1rem;
     }
 
     .message {
-      max-width: 90%;
-      margin: 1rem auto 0;
       font-weight: bold;
       font-size: 1.05rem;
-      color: #2f4f4f;
-    }
-
-    .pose {
-      margin-top: 0.5rem;
-      font-size: 1rem;
-      color: #446b5a;
     }
 
     footer {
@@ -162,34 +176,7 @@
       "오늘의 행운은 모두 당신에게! (횟수 5회 추가 쿠폰)"
     ];
 
-    const yogaPoses = [
-      "산 자세 (Tadasana)",
-      "전사 자세 II (Virabhadrasana II)",
-      "나무 자세 (Vrksasana)",
-      "고양이-소 자세 (Marjaryasana-Bitilasana)",
-      "다운독 (Adho Mukha Svanasana)",
-      "아이 자세 (Balasana)",
-      "코브라 자세 (Bhujangasana)",
-      "비둘기 자세 (Kapotasana)",
-      "반달 자세 (Ardha Chandrasana)",
-      "활 자세 (Dhanurasana)"
-    ];
-
-    const pilatesMoves = [
-      "백 롤업 (Roll-Up)",
-      "브릿지 (Shoulder Bridge)",
-      "레그 서클 (Leg Circles)",
-      "더 헌드레드 (The Hundred)",
-      "사이드 킥 (Side Kick)",
-      "플랭크 (Plank)",
-      "싱글 레그 스트레치 (Single Leg Stretch)",
-      "더블 레그 스트레치 (Double Leg Stretch)",
-      "크리스 크로스 (Criss Cross)",
-      "스완 다이브 (Swan Dive)"
-    ];
-
     const card = document.getElementById('fortuneCard');
-    const cardInner = card.querySelector('.card-inner');
     const cardFront = document.getElementById('cardFront');
     const message = document.getElementById('message');
     const pose = document.getElementById('pose');
@@ -197,33 +184,40 @@
     const today = new Date().toISOString().split('T')[0];
     const storedDate = localStorage.getItem('lastDrawDate');
     const storedMessage = localStorage.getItem('todayMessage');
-    const storedPose = localStorage.getItem('todayPose');
+    const storedImage = localStorage.getItem('todayImage');
 
     if (storedDate === today && storedMessage) {
       cardFront.textContent = '이미 오늘의 카드를 뽑았어요';
       message.textContent = storedMessage;
-      pose.textContent = storedPose || '';
+      pose.textContent = '';
+
+      if (storedImage) {
+        document.querySelector('.card-back').style.backgroundImage = `url('${storedImage}')`;
+      }
+
       card.classList.add('flipped');
     }
 
     card.addEventListener('click', () => {
       const now = new Date().toISOString().split('T')[0];
       const lastDate = localStorage.getItem('lastDrawDate');
-
       if (lastDate === now) return;
 
       const selectedMsg = affirmations[Math.floor(Math.random() * affirmations.length)];
-      const yoga = yogaPoses[Math.floor(Math.random() * yogaPoses.length)];
-      const pilates = pilatesMoves[Math.floor(Math.random() * pilatesMoves.length)];
-      const selectedPose = `요가: ${yoga} / 필라테스: ${pilates}`;
+      const isYoga = Math.random() < 0.5;
+      const imgIndex = Math.floor(Math.random() * 10) + 1;
+      const selectedImage = isYoga ? `yoga${imgIndex}.png` : `pilates${imgIndex}.png`;
+
+      message.textContent = selectedMsg;
+      pose.textContent = '';
+      document.querySelector('.card-back').style.backgroundImage = `url('${selectedImage}')`;
 
       card.classList.add('flipped');
-      message.textContent = selectedMsg;
-      pose.textContent = selectedPose;
 
       localStorage.setItem('lastDrawDate', now);
       localStorage.setItem('todayMessage', selectedMsg);
-      localStorage.setItem('todayPose', selectedPose);
+      localStorage.setItem('todayPose', '');
+      localStorage.setItem('todayImage', selectedImage);
     });
   </script>
 </body>

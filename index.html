@@ -5,13 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TAO 오늘의 카드</title>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Noto Sans KR', sans-serif;
-      background-color: #fefcf9;
-      position: relative;
-      overflow: hidden;
-    }
+  body {
+    margin: 0;
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #fefcf9;
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
 
     body::before {
       content: "";
@@ -34,7 +40,7 @@
       position: relative;
       z-index: 1;
       text-align: center;
-      padding: 2rem 1rem;
+      padding: 1rem;
     }
 
     h1 {
@@ -49,7 +55,7 @@
       border-radius: 16px;
       background: transparent;
       perspective: 1000px;
-      margin: 1.5rem auto;
+      margin: 0 auto;
     }
 
     .card-inner {
@@ -106,14 +112,16 @@
     }
 
     .message, .pose {
-      position: relative;
-      z-index: 1;
-      padding: 0 1rem;
-    }
+    position: relative;
+    z-index: 1;
+    padding: 0 1rem;
+    font-size: 1.3rem;
+    line-height: 1.6;
+  }
 
     .message {
       font-weight: bold;
-      font-size: 1.05rem;
+      font-size: 1.3rem;
     }
 
     footer {

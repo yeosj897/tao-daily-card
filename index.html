@@ -94,7 +94,7 @@
       transform: rotateY(180deg);
       flex-direction: column;
       position: relative;
-      background: #000; /* fallback 배경 */
+      background: transparent;
       overflow: hidden;
     }
 
@@ -104,7 +104,7 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      opacity: 0.4; /* 배경 이미지만 반투명 */
+      opacity: 0.4; 
       border-radius: 16px;
       z-index: 0;
     }
@@ -119,6 +119,8 @@
       line-height: 1.6;
       text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
       text-align: center;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 0.5rem;
     }
 
     footer {

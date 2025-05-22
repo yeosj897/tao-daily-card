@@ -93,20 +93,26 @@
     .card-back {
       transform: rotateY(180deg);
       flex-direction: column;
+      background-color: #446b5a;
       position: relative;
-      background: transparent;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
       overflow: hidden;
+      border-radius: 16px;
     }
 
-    .background-image {
+    #backgroundImage{
+      content: '';
       position: absolute;
       inset: 0;
+      background-image: var(--background-image); 
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      opacity: 0.4; 
-      border-radius: 16px;
+      opacity: 0.35; 
       z-index: 0;
+      pointer-events: none;
+      border-radius: 16px;
     }
 
     .message, .pose {
@@ -119,8 +125,6 @@
       line-height: 1.6;
       text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
       text-align: center;
-      background-color: rgba(0, 0, 0, 0.2);
-      border-radius: 0.5rem;
     }
 
     footer {

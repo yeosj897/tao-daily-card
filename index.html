@@ -5,19 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TAO 오늘의 카드</title>
   <style>
-  body {
-    margin: 0;
-    font-family: 'Noto Sans KR', sans-serif;
-    background-color: #fefcf9;
-    position: relative;
-    overflow: hidden;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-  }
+    body {
+      margin: 0;
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #fefcf9;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
 
     body::before {
       content: "";
@@ -40,12 +39,7 @@
       position: relative;
       z-index: 1;
       text-align: center;
-      padding: 1rem;
-
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      padding: 2rem 1rem;
     }
 
     h1 {
@@ -61,15 +55,14 @@
       background: transparent;
       perspective: 1000px;
       margin: 0 auto;
-      position: relative;
     }
 
     .card-inner {
       width: 100%;
       height: 100%;
+      position: relative;
       transition: transform 0.8s;
       transform-style: preserve-3d;
-      position: relative;
     }
 
     .card.flipped .card-inner {
@@ -78,12 +71,9 @@
 
     .card-front, .card-back {
       position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
       backface-visibility: hidden;
-      background: #d0e6d9;
       border-radius: 16px;
       display: flex;
       align-items: center;
@@ -97,39 +87,38 @@
       color: #2f4f4f;
       font-weight: bold;
       text-align: center;
+      background: #d0e6d9;
     }
 
     .card-back {
       transform: rotateY(180deg);
       flex-direction: column;
-      background-size: contain;
-      background-position: center center;
-      background-repeat: no-repeat;
       position: relative;
-      color: #fff;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+      background: #000; /* fallback 배경 */
+      overflow: hidden;
     }
 
-    .card-back::before {
-      content: '';
+    .background-image {
       position: absolute;
       inset: 0;
-      background-color: rgba(0, 0, 0, 0.4);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.4; /* 배경 이미지만 반투명 */
       border-radius: 16px;
       z-index: 0;
     }
 
     .message, .pose {
-    position: relative;
-    z-index: 1;
-    padding: 0 1rem;
-    font-size: 1.5rem;
-    line-height: 1.6;
-    text-align: center;
-}
-
-    .message {
+      position: relative;
+      z-index: 1;
+      color: white;
+      padding: 0 1rem;
+      font-size: 1.4rem;
       font-weight: bold;
+      line-height: 1.6;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+      text-align: center;
     }
 
     footer {
@@ -141,17 +130,18 @@
 </head>
 <body>
   <div class="app">
-    <h1>🌿TAO 오늘의 운세 카드🌿</h1>
+    <h1>🌿 TAO 오늘의 운세 카드</h1>
     <div class="card" id="fortuneCard">
       <div class="card-inner">
         <div class="card-front" id="cardFront">클릭해서 오늘의 카드를 확인하세요</div>
         <div class="card-back">
+          <div class="background-image" id="backgroundImage"></div>
           <div class="message" id="message"></div>
           <div class="pose" id="pose"></div>
         </div>
       </div>
     </div>
-    <footer>매일 한 번만 운세를 볼 수 있어요🌞</footer>
+    <footer>매일 한 번만 운세를 볼 수 있어요 🌞</footer>
   </div>
 
   <script>
@@ -196,6 +186,7 @@
     const cardFront = document.getElementById('cardFront');
     const message = document.getElementById('message');
     const pose = document.getElementById('pose');
+    const backgroundImage = document.getElementById('backgroundImage');
 
     const today = new Date().toISOString().split('T')[0];
     const storedDate = localStorage.getItem('lastDrawDate');
@@ -208,7 +199,7 @@
       pose.textContent = '';
 
       if (storedImage) {
-        document.querySelector('.card-back').style.backgroundImage = `url('${storedImage}')`;
+        backgroundImage.style.backgroundImage = `url('${storedImage}')`;
       }
 
       card.classList.add('flipped');
@@ -226,13 +217,12 @@
 
       message.textContent = selectedMsg;
       pose.textContent = '';
-      document.querySelector('.card-back').style.backgroundImage = `url('${selectedImage}')`;
+      backgroundImage.style.backgroundImage = `url('${selectedImage}')`;
 
       card.classList.add('flipped');
 
       localStorage.setItem('lastDrawDate', now);
       localStorage.setItem('todayMessage', selectedMsg);
-      localStorage.setItem('todayPose', '');
       localStorage.setItem('todayImage', selectedImage);
     });
   </script>
